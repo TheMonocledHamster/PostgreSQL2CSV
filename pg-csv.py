@@ -24,12 +24,15 @@ if args.config:
     config = configparser.ConfigParser()
     config.read(args.config)
     host, dbname, port, user, password = config['conn_string'].values()
+    queries = config['queries'].values()
 else:
     host = args.hostname if args.hostname else 'localhost'
     dbname = args.dbname if args.dbname else 'postgres'
     port = args.port if args.port else '5432'
     user = args.user if args.user else input('Username: ')
     password = getpass.getpass('Password: ')
+    if args.query:
+        queries = args.query.split(';')
 
 
 # Connect to DB
@@ -39,10 +42,9 @@ db_cursor = db_conn.cursor()
 
 
 # Fetch Queries
-if args.query:
-    queries = args.query.split(';')
-else:
-    queries = config['queries'].values()
+
+if not queries:
+    queries = input('Query: ').split(';')
 
 
 # Execute Queries and Write to CSV
