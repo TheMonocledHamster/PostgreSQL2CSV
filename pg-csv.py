@@ -44,17 +44,17 @@ db_cursor = db_conn.cursor()
 # Fetch Queries
 
 if not queries:
-    queries = input('Query: ').split(';')
+    queries = input('Query: ').strip(';')
 
 
 # Execute Queries and Write to CSV
 output_dir = config['output']['dir']
 for query in queries:
     filename = output_dir + str(uuid.uuid4()) + '.csv'
-    csv_query = 'COPY ({}) TO {} WITH CSV HEADER'.format(query,filename)
-    print(csv_query)
-    db_cursor.execute(csv_query)
-    db_conn.commit()
+    csv_query = 'COPY ({}) TO STDOUT WITH CSV HEADER'.format(query)
+    with open(filename, 'w') as output_file:
+        db_cursor.copy_expert(csv_query,output_file)
+        db_conn.commit()
 
 db_cursor.close()
 db_conn.close()
