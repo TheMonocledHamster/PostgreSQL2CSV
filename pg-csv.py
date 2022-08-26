@@ -41,8 +41,6 @@ db_conn = psycopg2.connect(host=host, dbname=dbname,\
 db_cursor = db_conn.cursor()
 
 
-# Fetch Queries
-
 if not queries:
     queries = input('Query: ').split(';')
 
